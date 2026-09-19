@@ -10,6 +10,10 @@
 [![License](https://img.shields.io/badge/License-All%20Rights%20Reserved-ef4444?style=for-the-badge)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Electron%20%7C%20Node.js-6366f1?style=for-the-badge&logo=electron)](package.json)
 
+<br>
+
+[![İndir](https://img.shields.io/badge/⬇️%20Windows%20İçin%20İndir-Zenxy%20Workspace%20Setup%20(.exe)-2563eb?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/zenxy177/zenxy-workspace-app/releases/latest)
+
 <p align="center">
   Zenxy Workspace, takımların ve geliştiricilerin kendi Windows VDS / Linux sunucuları üzerinde sıfır gecikmeyle, güvenli ve ortaklaşa kod yazmalarını sağlayan yeni nesil bir masaüstü geliştirme ortamıdır.
 </p>
