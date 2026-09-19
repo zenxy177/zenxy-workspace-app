@@ -6,7 +6,11 @@ const VDSServer = require('./src/server/server');
 
 let mainWindow = null;
 let embeddedServer = null;
-const localDb = new Database();
+let localDb = null;
+
+function getUserDataPath() {
+    return app.isPackaged ? app.getPath('userData') : null;
+}
 
 function getLocalIpAddresses() {
     const interfaces = os.networkInterfaces();
@@ -44,9 +48,6 @@ function createWindow() {
         if (input.key === 'F12' || (input.control && input.shift && input.key.toLowerCase() === 'i')) {
             mainWindow.webContents.toggleDevTools();
         }
-        if (input.key === 'F5' || (input.control && input.key.toLowerCase() === 'r')) {
-            mainWindow.reload();
-        }
     });
 
     mainWindow.on('closed', () => {
@@ -55,6 +56,7 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
+    localDb = new Database(getUserDataPath());
     createWindow();
 
     app.on('activate', () => {
@@ -95,7 +97,7 @@ ipcMain.handle('window:close', () => {
 ipcMain.handle('server:start', async (event, port) => {
     try {
         if (!embeddedServer) {
-            embeddedServer = new VDSServer();
+            embeddedServer = new VDSServer(getUserDataPath());
         }
         const activePort = await embeddedServer.start(port);
         return {

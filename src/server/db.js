@@ -5,7 +5,13 @@ const crypto = require('crypto');
 
 class Database {
     constructor(dataDir = null) {
-        this.dataDir = dataDir || path.join(process.cwd(), 'data');
+        if (dataDir) {
+            this.dataDir = path.join(dataDir, 'data');
+            this.workspaceDir = path.join(dataDir, 'shared_workspace');
+        } else {
+            this.dataDir = path.join(process.cwd(), 'data');
+            this.workspaceDir = path.join(process.cwd(), 'shared_workspace');
+        }
         this.configPath = path.join(this.dataDir, 'config.json');
         this.usersPath = path.join(this.dataDir, 'users.json');
         this.logsPath = path.join(this.dataDir, 'logs.json');
@@ -18,9 +24,8 @@ class Database {
         if (!fs.existsSync(this.dataDir)) {
             fs.mkdirSync(this.dataDir, { recursive: true });
         }
-        const defaultShared = path.join(process.cwd(), 'shared_workspace');
-        if (!fs.existsSync(defaultShared)) {
-            fs.mkdirSync(defaultShared, { recursive: true });
+        if (!fs.existsSync(this.workspaceDir)) {
+            fs.mkdirSync(this.workspaceDir, { recursive: true });
         }
     }
 
@@ -50,7 +55,7 @@ class Database {
                     {
                         id: 'default',
                         name: 'Ana Paylaşım Alanı',
-                        path: path.resolve(process.cwd(), 'shared_workspace')
+                        path: path.resolve(this.workspaceDir)
                     }
                 ],
                 security: {

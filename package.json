@@ -5,6 +5,8 @@
   "main": "electron-main.js",
   "scripts": {
     "start": "electron .",
+    "dist": "electron-builder --win",
+    "dist:portable": "electron-builder --win portable",
     "server-only": "node src/server/standalone-server.js",
     "test-security": "node test/security.test.js"
   },
@@ -16,8 +18,44 @@
     "remote-workspace",
     "terminal"
   ],
-  "author": "Antigravity",
-  "license": "MIT",
+  "author": "zenxy177",
+  "license": "SEE LICENSE IN LICENSE",
+  "build": {
+    "appId": "com.zenxy.workspace",
+    "productName": "Zenxy Workspace",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Zenxy Workspace"
+    },
+    "files": [
+      "electron-main.js",
+      "preload.js",
+      "src/**/*",
+      "package.json"
+    ]
+  },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
@@ -29,6 +67,9 @@
     "ws": "^8.18.0"
   },
   "devDependencies": {
-    "electron": "^33.2.1"
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8",
+    "png-to-ico": "^3.0.2",
+    "rcedit": "^5.0.2"
   }
 }

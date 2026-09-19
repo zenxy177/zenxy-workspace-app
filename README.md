@@ -1,11 +1,13 @@
 <div align="center">
 
+<img src="src/client/assets/logo.png" alt="Zenxy Workspace Logo" width="96" height="96" style="border-radius: 20px; box-shadow: 0 0 30px rgba(37, 99, 235, 0.4);" />
+
 # ⚡ Zenxy Workspace
 
 **Çok Kullanıcılı, Güvenli VDS Ortak Kodlama ve İşbirliği Platformu**
 
-[![Security](https://img.shields.io/badge/Security-Sandbox%20Jail%20%2B%20Rate%20Limit-10b981?style=for-the-badge&logo=shield)](file:///c:/Users/Wrait/Desktop/VDS%20ortak%20%C3%A7al%C4%B1%C5%9Fma/LICENSE)
-[![License](https://img.shields.io/badge/License-All%20Rights%20Reserved-ef4444?style=for-the-badge)](file:///c:/Users/Wrait/Desktop/VDS%20ortak%20%C3%A7al%C4%B1%C5%9Fma/LICENSE)
+[![Security](https://img.shields.io/badge/Security-Sandbox%20Jail%20%2B%20Rate%20Limit-10b981?style=for-the-badge&logo=shield)](LICENSE)
+[![License](https://img.shields.io/badge/License-All%20Rights%20Reserved-ef4444?style=for-the-badge)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Electron%20%7C%20Node.js-6366f1?style=for-the-badge&logo=electron)](package.json)
 
 <p align="center">
