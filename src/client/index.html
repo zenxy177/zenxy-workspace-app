@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenxy Workspace</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/host.css">
+    <link rel="stylesheet" href="css/client.css">
+    <link rel="stylesheet" href="css/terminal.css">
+</head>
+<body>
+
+    <div class="ambient-glow"></div>
+
+    <!-- Window Titlebar -->
+    <header class="window-frame">
+        <div class="window-brand">
+            <div class="brand-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                    <polyline points="2 17 12 22 22 17"></polyline>
+                    <polyline points="2 12 12 17 22 12"></polyline>
+                </svg>
+            </div>
+            <span>Zenxy Workspace</span>
+        </div>
+
+        <div class="window-controls">
+            <button class="win-btn-action" id="btn-min" title="Simge Durumuna">
+                <svg width="10" height="10" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            </button>
+            <button class="win-btn-action" id="btn-max" title="Ekranı Kapla">
+                <svg width="10" height="10" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="3" width="18" height="18" rx="2"></rect></svg>
+            </button>
+            <button class="win-btn-action close" id="btn-close" title="Kapat">
+                <svg width="10" height="10" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Viewport -->
+    <div class="app-viewport">
+        
+        <!-- Left Vertical Dock Navigation -->
+        <aside class="sidebar-dock">
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; width: 100%;">
+                
+                <!-- 1. Host Mode -->
+                <button class="dock-btn" id="dock-btn-host" title="VDS Sunucu & Yönetim">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                        <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                        <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                        <line x1="6" y1="18" x2="6.01" y2="18"></line>
+                    </svg>
+                    <span class="dock-tooltip">VDS Sunucu & Yönetim</span>
+                </button>
+
+                <!-- 2. Connect / Auth Screen -->
+                <button class="dock-btn active" id="dock-btn-connect" title="VDS Bağlantısı & Giriş">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                        <polyline points="10 17 15 12 10 7"></polyline>
+                        <line x1="15" y1="12" x2="3" y2="12"></line>
+                    </svg>
+                    <span class="dock-tooltip">VDS Bağlantısı</span>
+                </button>
+
+                <!-- 3. Workspace (Explorer & Editor) -->
+                <button class="dock-btn" id="dock-btn-client" title="Çalışma Alanı (Gezgin & Editör)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                    </svg>
+                    <span class="dock-tooltip">Çalışma Alanı & Editör</span>
+                </button>
+            </div>
+
+            <!-- Bottom Connection Indicator Dot -->
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                <div id="dock-connection-indicator" style="width: 8px; height: 8px; border-radius: 50%; background: var(--text-tertiary); box-shadow: none;" title="Bağlantı Durumu"></div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-stage">
+            
+            <!-- =========================================================================
+                 VIEW 1: HOST / VDS SERVER DASHBOARD
+                 ========================================================================= -->
+            <div class="host-dashboard" id="view-host" style="display: none;">
+                
+                <!-- Top Control Bar -->
+                <div class="host-header-bar">
+                    <div class="host-title-group">
+                        <h2>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--primary-light);">
+                                <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+                                <line x1="4" y1="22" x2="4" y2="15"></line>
+                            </svg>
+                            VDS Sunucu Konsolu
+                        </h2>
+                        <p>VDS üzerinde çok kullanıcılı servis ve güvenli dosya erişimini yönetin.</p>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div class="server-status-pill">
+                            <div class="pulse-dot" id="host-pulse-dot"></div>
+                            <span id="host-status-text" style="font-size: 12px; font-weight: 600; color: #cbd5e1;">Sunucu Kapalı</span>
+                            <div style="display: flex; align-items: center; gap: 4px; margin-left: 6px;">
+                                <span style="font-size: 11px; color: var(--text-tertiary);">Port:</span>
+                                <input type="number" id="host-port-input" value="8899" class="input-pro" style="width: 65px; padding: 2px 6px; font-size: 11px;" />
+                            </div>
+                        </div>
+
+                        <button class="btn-primary-gradient" id="btn-toggle-server" style="width: auto;">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                            <span>Sunucuyu Başlat</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Shared Workspace Folder Picker Bar -->
+                <div class="network-info-box" style="border-left: 3px solid var(--primary);">
+                    <div style="display: flex; align-items: center; gap: 12px; flex: 1; overflow: hidden;">
+                        <div style="display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; color: var(--primary-light); text-transform: uppercase; white-space: nowrap;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                            <span>Paylaşılan VDS Klasörü:</span>
+                        </div>
+                        <div id="host-shared-folder-display" style="font-family: var(--font-mono); font-size: 11px; color: #f8fafc; background: rgba(0,0,0,0.3); padding: 4px 10px; border-radius: 4px; border: 1px solid var(--border-hairline); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1;">
+                            shared_workspace
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 6px; margin-left: 12px;">
+                        <button class="btn-ghost" id="btn-browse-shared-folder" style="font-size: 11px; padding: 4px 10px;">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                            <span>Gözat / Klasör Seç</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Network IP Strip -->
+                <div class="network-info-box">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 11px; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase;">Bağlantı IP Adresleri:</span>
+                        <div id="host-ips-display" class="ip-chip-group">
+                            <span style="color: var(--text-tertiary); font-size: 11px;">Sunucu başlatıldığında adresler listelenecektir.</span>
+                        </div>
+                    </div>
+                    <span style="font-size: 11px; color: var(--text-tertiary); font-family: var(--font-mono);">REST + WSS Engine</span>
+                </div>
+
+                <!-- 4 Metrics Cards -->
+                <div class="metrics-grid-pro">
+                    <div class="metric-card-pro">
+                        <div class="metric-top">
+                            <span class="metric-label">Aktif Bağlantılar</span>
+                            <div class="metric-icon">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+                            </div>
+                        </div>
+                        <div class="metric-number" id="metric-sessions">0</div>
+                        <div class="metric-footer">
+                            <span style="color: var(--emerald);">● Canlı Oturumlar</span>
+                        </div>
+                    </div>
+
+                    <div class="metric-card-pro">
+                        <div class="metric-top">
+                            <span class="metric-label">İşlemci / CPU</span>
+                            <div class="metric-icon">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect></svg>
+                            </div>
+                        </div>
+                        <div class="metric-number" id="metric-cpu-count">-</div>
+                        <div class="metric-footer">
+                            <span>VDS Çekirdek Kapasitesi</span>
+                        </div>
+                    </div>
+
+                    <div class="metric-card-pro">
+                        <div class="metric-top">
+                            <span class="metric-label">Bellek (RAM)</span>
+                            <div class="metric-icon">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="12" x2="2" y2="12"></line><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg>
+                            </div>
+                        </div>
+                        <div class="metric-number" id="metric-ram-used">-</div>
+                        <div class="metric-progress-bg">
+                            <div class="metric-progress-fill" id="metric-ram-bar" style="width: 0%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="metric-card-pro">
+                        <div class="metric-top">
+                            <span class="metric-label">Güvenlik Durumu</span>
+                            <div class="metric-icon" style="color: var(--emerald);">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                            </div>
+                        </div>
+                        <div class="metric-number" style="font-size: 18px; color: var(--emerald);">Korumalı</div>
+                        <div class="metric-footer">
+                            <span>Dizin Hapsi & Brute-Force Aktif</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sub-Navigation and Search -->
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div class="host-subnav">
+                        <button class="host-subnav-btn active" data-tab="users">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+                            <span>Kullanıcı & İzin Yönetimi</span>
+                        </button>
+                        <button class="host-subnav-btn" data-tab="logs">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                            <span>Güvenlik & Denetim Logları</span>
+                        </button>
+                        <button class="host-subnav-btn" data-tab="sessions">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                            <span>Canlı Oturumlar</span>
+                        </button>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <input type="text" id="host-search-input" class="input-pro" placeholder="Filtrele..." style="width: 160px; font-size: 11px;" />
+                        <button class="btn-primary-gradient" id="btn-open-add-user" style="width: auto;">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            <span>Yeni Kullanıcı Ekle</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Host Tab 1: Users Table -->
+                <div class="pro-card-panel host-tab-content" id="host-tab-users">
+                    <div class="pro-table-header">
+                        <h3>Yetkilendirilmiş Kullanıcı Hesapları</h3>
+                        <span style="font-size: 11px; color: var(--text-tertiary);">Her kullanıcının klasör ve işlem yetkileri bağımsızdır</span>
+                    </div>
+                    <table class="pro-table">
+                        <thead>
+                            <tr>
+                                <th>Kullanıcı</th>
+                                <th>Rol</th>
+                                <th>İzinler</th>
+                                <th>Dizin Kapsamı</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-table-body">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Host Tab 2: Logs Table -->
+                <div class="pro-card-panel host-tab-content" id="host-tab-logs" style="display: none;">
+                    <div class="pro-table-header">
+                        <h3>Canlı Denetim Günlüğü (Audit Trail)</h3>
+                        <button class="btn-ghost" onclick="window.hostPanel.loadLogs()">Yenile</button>
+                    </div>
+                    <table class="pro-table">
+                        <thead>
+                            <tr>
+                                <th>Zaman</th>
+                                <th>Kullanıcı</th>
+                                <th>IP</th>
+                                <th>Eylem</th>
+                                <th>Hedef</th>
+                                <th>Detay</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logs-table-body">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Host Tab 3: Active Sessions -->
+                <div class="pro-card-panel host-tab-content" id="host-tab-sessions" style="display: none;">
+                    <div class="pro-table-header">
+                        <h3>Bağlı İstemciler</h3>
+                        <button class="btn-ghost" onclick="window.hostPanel.loadSessions()">Yenile</button>
+                    </div>
+                    <table class="pro-table">
+                        <thead>
+                            <tr>
+                                <th>Kullanıcı</th>
+                                <th>IP Adresi</th>
+                                <th>Giriş Saati</th>
+                                <th>İşlem</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sessions-table-body">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <!-- =========================================================================
+                 VIEW 2: CONNECT HUB & LOGIN SCREEN (ÖNCE BURADAN BAĞLANILIR)
+                 ========================================================================= -->
+            <div class="connect-hub-view" id="view-connect">
+                <div class="connect-panel-card">
+                    
+                    <div class="connect-header">
+                        <div class="connect-icon-box">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="2" y1="12" x2="22" y2="12"></line>
+                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                            </svg>
+                        </div>
+                        <h2>Zenxy Workspace'e Bağlan</h2>
+                        <p>Sunucu adresi ve kullanıcı bilgilerinizle oturum açın.</p>
+                    </div>
+
+                    <!-- Welcome Mode Switcher (Host vs Client) -->
+                    <div class="welcome-mode-cards" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px;">
+                        <div class="mode-card active" id="mode-card-client" style="padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--primary); background: rgba(99, 102, 241, 0.12); cursor: pointer; display: flex; flex-direction: column; gap: 4px; transition: all 0.15s;">
+                            <div style="display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 12px; color: #fff;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                <span>Zenxy'ye Bağlan</span>
+                            </div>
+                            <span style="font-size: 10.5px; color: var(--text-secondary); line-height: 1.3;">Takım üyesi olarak dosyalara erişin ve kodlayın</span>
+                        </div>
+                        <div class="mode-card" id="mode-card-host" style="padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-hairline); background: rgba(255, 255, 255, 0.03); cursor: pointer; display: flex; flex-direction: column; gap: 4px; transition: all 0.15s;">
+                            <div style="display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 12px; color: #cbd5e1;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
+                                <span>Sunucu Kur / Host</span>
+                            </div>
+                            <span style="font-size: 10.5px; color: var(--text-tertiary); line-height: 1.3;">Yönetici iseniz yerel sunucuyu başlatın</span>
+                        </div>
+                    </div>
+
+                    <!-- Disconnected Form -->
+                    <form id="connect-hub-form" style="display: flex; flex-direction: column; gap: 14px;">
+                        <div style="display: grid; grid-template-columns: 2.2fr 1fr; gap: 10px;">
+                            <div>
+                                <label style="font-size: 11px; font-weight: 600; color: var(--text-tertiary); display: block; margin-bottom: 6px; text-transform: uppercase;">Sunucu IP / Host Adresi</label>
+                                <input type="text" id="connect-host" class="input-pro" placeholder="örn: 127.0.0.1 veya VDS IP" required value="127.0.0.1" />
+                            </div>
+                            <div>
+                                <label style="font-size: 11px; font-weight: 600; color: var(--text-tertiary); display: block; margin-bottom: 6px; text-transform: uppercase;">Port</label>
+                                <input type="number" id="connect-port" class="input-pro" value="8899" required />
+                            </div>
+                        </div>
+
+                        <div>
+                            <label style="font-size: 11px; font-weight: 600; color: var(--text-tertiary); display: block; margin-bottom: 6px; text-transform: uppercase;">Kullanıcı Adı</label>
+                            <input type="text" id="connect-username" class="input-pro" placeholder="Kullanıcı adınızı girin" required autocomplete="username" />
+                        </div>
+
+                        <div>
+                            <label style="font-size: 11px; font-weight: 600; color: var(--text-tertiary); display: block; margin-bottom: 6px; text-transform: uppercase;">Şifre</label>
+                            <div class="password-input-wrap" style="position: relative; display: flex; align-items: center;">
+                                <input type="password" id="connect-password" class="input-pro" placeholder="Parolanızı girin" required autocomplete="current-password" style="padding-right: 36px;" />
+                                <button type="button" class="btn-toggle-pw" id="btn-toggle-pw-connect" title="Şifreyi Göster/Gizle" style="position: absolute; right: 8px; background: transparent; border: none; color: var(--text-tertiary); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px; border-radius: 4px; transition: color 0.15s;">
+                                    <svg class="icon-eye-open" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                                    <svg class="icon-eye-closed" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-primary-gradient" id="btn-connect-submit" style="margin-top: 6px;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                            <span>Zenxy'ye Bağlan & Çalışma Alanını Aç</span>
+                        </button>
+                    </form>
+
+                    <!-- Active Session Card -->
+                    <div id="connect-active-card" class="connected-status-box" style="display: none;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div class="pulse-dot online"></div>
+                            <strong style="color: var(--emerald); font-size: 14px;">Zenxy Bağlantısı Aktif</strong>
+                        </div>
+                        <div style="font-size: 12px; color: var(--text-secondary);" id="active-session-summary">
+                        </div>
+                        <div style="display: flex; gap: 10px; width: 100%; margin-top: 4px;">
+                            <button class="btn-primary-gradient" id="btn-go-to-workspace" style="flex: 1;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                                <span>Çalışma Alanına Git</span>
+                            </button>
+                            <button class="btn-danger-subtle" id="btn-disconnect-session">
+                                <span>Bağlantıyı Kes</span>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- =========================================================================
+                 VIEW 3: CLIENT / WORKSPACE (FILE EXPLORER + EDITOR + DOCKED TERMINAL)
+                 ========================================================================= -->
+            <div class="client-workspace" id="view-client" style="display: none;">
+                
+                <!-- File Explorer Sidebar -->
+                <aside class="file-tree-sidebar">
+                    <div class="tree-sidebar-header">
+                        <span class="tree-sidebar-title">Gezgin</span>
+                        <div class="tree-sidebar-actions">
+                            <button class="sidebar-icon-btn" id="btn-new-file" title="Yeni Dosya">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+                            </button>
+                            <button class="sidebar-icon-btn" id="btn-new-folder" title="Yeni Klasör">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path><line x1="12" y1="11" x2="12" y2="17"></line><line x1="9" y1="14" x2="15" y2="14"></line></svg>
+                            </button>
+                            <button class="sidebar-icon-btn" id="btn-upload-file" title="Dosya Yükle">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                            </button>
+                            <button class="sidebar-icon-btn" id="btn-refresh-files" title="Yenile">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                            </button>
+                            <input type="file" id="file-upload-input" multiple style="display: none;" />
+                        </div>
+                    </div>
+                    
+                    <!-- Explorer Path Header Bar -->
+                    <div class="explorer-path-bar" id="explorer-path-bar">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                        <span id="explorer-current-path-text">/ (Kök Dizin)</span>
+                    </div>
+
+                    <!-- Explorer Quick Search / Filter Bar -->
+                    <div class="explorer-search-box" style="padding: 6px 10px; border-bottom: 1px solid var(--border-hairline); background: #06080d; display: flex; align-items: center; gap: 6px;">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <input type="text" id="explorer-filter-input" placeholder="Dosya veya klasör filtrele..." style="flex: 1; background: transparent; border: none; outline: none; font-size: 11px; color: #fff; font-family: var(--font-sans);" autocomplete="off" />
+                        <button type="button" id="btn-clear-explorer-filter" style="display: none; background: transparent; border: none; color: var(--text-tertiary); cursor: pointer; font-size: 11px; padding: 0 2px;" title="Filtreyi Temizle">✕</button>
+                    </div>
+
+                    <div class="tree-scroll-area" id="file-tree">
+                        <!-- Populated dynamically -->
+                    </div>
+                </aside>
+
+                <!-- Editor Stage -->
+                <section class="editor-stage-pane" id="editor-stage-wrapper">
+                    
+                    <!-- Editor Top Bar -->
+                    <div class="editor-toolbar-bar">
+                        <div class="editor-breadcrumb" id="editor-breadcrumb-nav">
+                            <button type="button" class="breadcrumb-item-btn" id="breadcrumb-root-btn">workspace</button>
+                            <span class="breadcrumb-separator">/</span>
+                            <span class="active-file" id="active-file-path">Dosya seçilmedi</span>
+                        </div>
+
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div id="save-status-indicator" class="save-status-pill clean" style="display: none;">
+                                <svg class="status-saved-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                <span class="status-dirty-dot" style="display: none;"></span>
+                                <span id="save-status-text">Tüm Değişiklikler Kaydedildi</span>
+                            </div>
+                            <span id="editor-permission-badge" class="collab-pill" style="display:none; color:var(--amber); border-color: rgba(245, 158, 11, 0.3);">
+                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                                <span>Salt Okunur</span>
+                            </span>
+                            <button type="button" class="action-btn-sm" id="btn-editor-find" title="Dosyada Bul (Ctrl+F)">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                <span>Bul</span>
+                                <span style="font-size: 9px; opacity: 0.6; font-family: var(--font-mono); background: rgba(255,255,255,0.08); padding: 1px 4px; border-radius: 2px;">Ctrl+F</span>
+                            </button>
+                            <button type="button" class="action-btn-sm" id="btn-editor-wrap" title="Satırları Kaydır / Word Wrap (Alt+Z)">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h13a3 3 0 0 1 0 6h-4m0 0l2-2m-2 2l2 2M4 18h4"/></svg>
+                                <span>Kaydır</span>
+                            </button>
+                            <button type="button" class="action-btn-sm" id="btn-editor-save" title="Kaydet (Ctrl+S)">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                                <span>Kaydet</span>
+                            </button>
+                            <button type="button" class="action-btn-sm" id="btn-editor-term" title="VDS PowerShell Konsolunu Aç/Kapat (Ctrl+`)">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+                                <span>Terminal</span>
+                                <span style="font-size: 9px; opacity: 0.6; font-family: var(--font-mono); background: rgba(255,255,255,0.08); padding: 1px 4px; border-radius: 2px;">Ctrl+`</span>
+                            </button>
+                            <div class="header-divider-sm"></div>
+                            <div class="collaborators-dock" id="collaborators-pill-group"></div>
+                            <span id="client-current-user" class="collab-pill" style="font-weight: 600;">Bağlandı</span>
+                        </div>
+                    </div>
+
+                    <!-- Floating Find & Replace Widget (VS Code Style) -->
+                    <div id="editor-find-widget" class="editor-find-widget" style="display: none;">
+                        <div class="find-input-wrap">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            <input type="text" id="find-search-input" placeholder="Dosyada bul..." autocomplete="off" />
+                            <span id="find-match-count" class="find-match-count">0/0</span>
+                        </div>
+                        <div class="find-actions-group">
+                            <button type="button" id="btn-find-prev" class="find-action-btn" title="Önceki Eşleşme (Shift+Enter)">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg>
+                            </button>
+                            <button type="button" id="btn-find-next" class="find-action-btn" title="Sonraki Eşleşme (Enter)">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                            </button>
+                            <button type="button" id="btn-find-close" class="find-action-btn" title="Kapat (Esc)">✕</button>
+                        </div>
+                    </div>
+
+                    <!-- Editor Tabs Bar -->
+                    <div class="pro-tabs-container" id="editor-tabs-bar"></div>
+
+                    <!-- Code Canvas Area -->
+                    <div class="code-canvas" id="editor-content-area" style="flex: 1; display: flex; flex-direction: column; position: relative;"></div>
+
+                    <!-- Docked Bottom Terminal Panel (VS Code Style) -->
+                    <div class="docked-terminal-drawer collapsed" id="docked-terminal-panel">
+                        <div class="docked-terminal-header">
+                            <div class="terminal-tab-pill">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+                                <span>VDS PowerShell Konsolu</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 4px;">
+                                <button class="sidebar-icon-btn" onclick="document.getElementById('term-output').textContent='';" title="Temizle">
+                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                </button>
+                                <button class="sidebar-icon-btn" onclick="window.remoteTerminal.toggleTerminalDrawer()" title="Kapat / Küçült">
+                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="terminal-content-area" style="flex: 1; display: flex;"></div>
+                    </div>
+
+                    <!-- Bottom Status Bar -->
+                    <footer class="pro-status-strip">
+                        <div class="status-group-left">
+                            <button class="status-btn-toggle-terminal" id="btn-toggle-docked-term" title="Terminali Göster/Gizle (Ctrl+`)">
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+                                <span>Terminal</span>
+                            </button>
+                            <span class="status-indicator-live">Senkronize</span>
+                            <span id="status-lang">Düz Metin</span>
+                            <span id="status-cursor">Satır 1, Sütun 1</span>
+                        </div>
+                        <div class="status-group-right">
+                            <div class="status-zoom-group" style="display: flex; align-items: center; gap: 4px; padding-right: 6px; border-right: 1px solid var(--border-hairline);">
+                                <button type="button" id="btn-zoom-out" class="status-btn-icon" title="Yazı Boyutunu Küçült (Ctrl+-)" style="background:none; border:none; color:var(--text-tertiary); cursor:pointer; padding:2px 4px; border-radius:3px; display:flex; align-items:center;">
+                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                                </button>
+                                <span id="editor-font-size-label" style="font-family: var(--font-mono); font-size: 10.5px; color: var(--text-secondary); cursor: pointer;" title="Varsayılana Sıfırla (Ctrl+0)">13px</span>
+                                <button type="button" id="btn-zoom-in" class="status-btn-icon" title="Yazı Boyutunu Büyüt (Ctrl++)" style="background:none; border:none; color:var(--text-tertiary); cursor:pointer; padding:2px 4px; border-radius:3px; display:flex; align-items:center;">
+                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                                </button>
+                            </div>
+                            <span>UTF-8</span>
+                            <span>Zenxy Zero-Trust Sandbox</span>
+                        </div>
+                    </footer>
+                </section>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- =========================================================================
+         MODALS & DIALOGS
+         ========================================================================= -->
+    
+    <!-- Modal: File & Folder Action (Prompt yerine profesyonel modal) -->
+    <div class="modal-overlay" id="file-action-modal">
+        <div class="modal-sheet" style="width: 440px;">
+            <div class="modal-header-pro">
+                <h3 id="file-action-modal-title">Yeni Dosya Oluştur</h3>
+                <button class="win-btn-action btn-close-modal">✕</button>
+            </div>
+            <form id="file-action-form">
+                <input type="hidden" id="file-action-type" />
+                <input type="hidden" id="file-action-oldpath" />
+                <div class="modal-body-pro" style="display: flex; flex-direction: column; gap: 12px;">
+                    <label id="file-action-label" style="font-size: 11px; font-weight: 600; color: var(--text-tertiary); display: block; text-transform: uppercase;">İsim</label>
+                    <input type="text" id="file-action-input" class="input-pro" placeholder="örn: main.js veya config" required autocomplete="off" />
+                </div>
+                <div class="modal-footer-pro">
+                    <button type="button" class="btn-ghost btn-close-modal">Vazgeç</button>
+                    <button type="submit" class="btn-primary-gradient" id="file-action-submit-btn" style="width: auto;">Oluştur</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Add / Edit User -->
+    <div class="modal-overlay" id="user-modal">
+        <div class="modal-sheet" style="width: 540px;">
+            <div class="modal-header-pro">
+                <h3 id="user-modal-title">Yeni Kullanıcı Oluştur</h3>
+                <button class="win-btn-action btn-close-modal">✕</button>
+            </div>
+            <form id="user-form">
+                <input type="hidden" id="user-form-id" />
+                <div class="modal-body-pro" style="display: flex; flex-direction: column; gap: 14px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div>
+                            <label style="font-size: 11px; font-weight: 600; color: var(--text-tertiary); display: block; margin-bottom: 6px; text-transform: uppercase;">Kullanıcı Adı</label>
+                            <input type="text" id="user-form-username" class="input-pro" required />
+                        </div>
+                        <div>
+                            <label style="font-size: 11px; font-weight: 600; color: var(--text-tertiary); display: block; margin-bottom: 6px; text-transform: uppercase;">Görünen İsim</label>
+                            <input type="text" id="user-form-displayname" class="input-pro" />
+                        </div>
+                    </div>
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                            <label style="font-size: 11px; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase;">Parola</label>
+                            <span id="user-pw-strength-label" style="font-size: 11px; font-weight: 600; color: var(--text-tertiary); transition: color 0.2s;">Parola Gücü</span>
+                        </div>
+                        <div class="password-input-wrap" style="position: relative; display: flex; align-items: center;">
+                            <input type="password" id="user-form-password" class="input-pro" placeholder="Güçlü bir parola belirleyin" style="padding-right: 36px;" />
+                            <button type="button" class="btn-toggle-pw" id="btn-toggle-pw-user" title="Şifreyi Göster/Gizle" style="position: absolute; right: 8px; background: transparent; border: none; color: var(--text-tertiary); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px; border-radius: 4px; transition: color 0.15s;">
+                                <svg class="icon-eye-open" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                                <svg class="icon-eye-closed" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                            </button>
+                        </div>
+                        
+                        <!-- Password Strength Meter -->
+                        <div class="pw-strength-container" id="user-pw-strength-container" style="margin-top: 8px;">
+                            <div class="pw-strength-bar-track">
+                                <div class="pw-strength-bar-segment" id="user-pw-seg-1"></div>
+                                <div class="pw-strength-bar-segment" id="user-pw-seg-2"></div>
+                                <div class="pw-strength-bar-segment" id="user-pw-seg-3"></div>
+                                <div class="pw-strength-bar-segment" id="user-pw-seg-4"></div>
+                            </div>
+                            <div class="pw-criteria-chips">
+                                <span class="pw-chip" id="user-pw-crit-len">
+                                    <span class="chip-icon">✕</span> 8+ Karakter
+                                </span>
+                                <span class="pw-chip" id="user-pw-crit-upper">
+                                    <span class="chip-icon">✕</span> Büyük Harf (A-Z)
+                                </span>
+                                <span class="pw-chip" id="user-pw-crit-lower">
+                                    <span class="chip-icon">✕</span> Küçük Harf (a-z)
+                                </span>
+                                <span class="pw-chip" id="user-pw-crit-num">
+                                    <span class="chip-icon">✕</span> Rakam (0-9)
+                                </span>
+                                <span class="pw-chip" id="user-pw-crit-sym">
+                                    <span class="chip-icon">✕</span> Özel Karakter (!@#$)
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Permissions Box -->
+                    <div style="background: #080a10; padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-hairline);">
+                        <span style="font-size: 11px; font-weight: 700; color: var(--text-tertiary); display: block; margin-bottom: 8px; text-transform: uppercase;">Erişim İzinleri</span>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12px;">
+                            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                                <input type="checkbox" id="perm-read" checked /> Dosya Okuma / İndirme
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                                <input type="checkbox" id="perm-write" checked /> Dosya Düzenleme / Yazma
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                                <input type="checkbox" id="perm-delete" /> Dosya Silme Yetkisi
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                                <input type="checkbox" id="perm-terminal" /> VDS Terminal / CMD
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                                <input type="checkbox" id="perm-logs" /> Güvenlik Loglarını Görme
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                                <input type="checkbox" id="perm-all-folders" checked /> Tüm Dizinlere Erişim
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label style="font-size: 11px; font-weight: 600; color: var(--text-tertiary); display: block; margin-bottom: 6px; text-transform: uppercase;">Özel Klasör Kısıtı (Opsiyonel)</label>
+                        <input type="text" id="user-form-folders" class="input-pro" placeholder="örn: proje1, frontend/src" />
+                    </div>
+                </div>
+                <div class="modal-footer-pro">
+                    <button type="button" class="btn-ghost btn-close-modal">Vazgeç</button>
+                    <button type="submit" class="btn-primary-gradient" style="width: auto;">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Context Menu -->
+    <div class="context-menu" id="file-context-menu">
+        <div class="context-menu-item" id="ctx-open">Düzenle / Aç</div>
+        <div class="context-menu-item" id="ctx-download">İndir</div>
+        <div class="context-menu-divider"></div>
+        <div class="context-menu-item" id="ctx-rename">Yeniden Adlandır</div>
+        <div class="context-menu-item" id="ctx-delete" style="color: var(--rose);">Sil</div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/editor.js"></script>
+    <script src="js/terminal.js"></script>
+    <script src="js/host-panel.js"></script>
+    <script src="js/client-app.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

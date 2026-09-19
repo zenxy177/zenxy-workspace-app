@@ -1,0 +1,73 @@
+<div align="center">
+
+# ⚡ Zenxy Workspace
+
+**Çok Kullanıcılı, Güvenli VDS Ortak Kodlama ve İşbirliği Platformu**
+
+[![Security](https://img.shields.io/badge/Security-Sandbox%20Jail%20%2B%20Rate%20Limit-10b981?style=for-the-badge&logo=shield)](file:///c:/Users/Wrait/Desktop/VDS%20ortak%20%C3%A7al%C4%B1%C5%9Fma/LICENSE)
+[![License](https://img.shields.io/badge/License-All%20Rights%20Reserved-ef4444?style=for-the-badge)](file:///c:/Users/Wrait/Desktop/VDS%20ortak%20%C3%A7al%C4%B1%C5%9Fma/LICENSE)
+[![Platform](https://img.shields.io/badge/Platform-Electron%20%7C%20Node.js-6366f1?style=for-the-badge&logo=electron)](package.json)
+
+<p align="center">
+  Zenxy Workspace, takımların ve geliştiricilerin kendi Windows VDS / Linux sunucuları üzerinde sıfır gecikmeyle, güvenli ve ortaklaşa kod yazmalarını sağlayan yeni nesil bir masaüstü geliştirme ortamıdır.
+</p>
+
+</div>
+
+---
+
+## ✨ Temel Özellikler
+
+- 🖥️ **VDS Host & Sunucu Yönetim Paneli:** Tek tıkla yerel veya uzak sunucuyu başlatma, aktif oturumları ve donanım kullanımını (RAM/CPU) canlı izleme.
+- 📁 **Gelişmiş Dosya Gezgini:** Canlı arama/filtreleme, sürükle-bırak dosya/klasör taşıma, harici işletim sisteminden çoklu dosya yükleme.
+- 💻 **Dahili Güçlü Kod Editörü:** Sözdizimi vurgulama, font boyutu kontrolü (Ctrl + / -), sözcük sarma (Alt + Z), gelişmiş metin arama widget'ı (Ctrl + F).
+- 👥 **Granüler İzin ve Kullanıcı Yönetimi:** Kullanıcı bazlı `canRead`, `canWrite`, `canDelete`, `canTerminal` ve özel klasör sınırlandırma yetkileri.
+- 🔒 **Şifre Güçlülüğü Ölçeri:** Entropi ve kriter bazlı canlı şifre güç seviyesi denetimi.
+- 🛡️ **Kurumsal Güvenlik & Sandbox:**
+  - Path Traversal (Dizin Dışına Çıkma) Engelleme
+  - IP Bazlı Brute-Force Karantinası (5 denemede 15 dk blokaj)
+  - Katman-7 Kayan Pencereli Rate Limiter (Anti-Flood)
+  - WebSocket Soket Seli Koruması
+  - 20 MB Bellek / Çökme Koruması
+- 📜 **Canlı Güvenlik & Denetim Logları:** Kimin ne zaman hangi dosyayı düzenlediğini veya bağlandığını anlık WebSocket akışı ile izleme.
+
+---
+
+## 🚀 Başlangıç ve Kurulum
+
+### Gereksinimler
+- [Node.js](https://nodejs.org/) (v18 veya üstü)
+- npm veya yarn
+
+### Adımlar
+
+1. **Bağımlılıkları Yükleyin:**
+   ```bash
+   npm install
+   ```
+
+2. **Uygulamayı Başlatın:**
+   ```bash
+   npm start
+   ```
+
+3. **Yalnızca Sunucu (Headless / VDS) Modunda Çalıştırma:**
+   ```bash
+   npm run start:server
+   ```
+
+---
+
+## 🔒 Güvenlik Mimarisi ve Testler
+
+Uygulamanın güvenlik ve mimari test süitini çalıştırmak için:
+```bash
+npm test
+```
+
+---
+
+## ⚖️ Telif Hakkı ve Lisans
+
+Bu yazılımın tüm telif hakları saklıdır (**All Rights Reserved**).  
+Kaynak kodları yalnızca inceleme ve yetkili kullanım içindir; hak sahibinin izni olmadan kopyalanamaz, yeniden dağıtılamaz veya satılamaz. Detaylar için [`LICENSE`](LICENSE) dosyasını inceleyiniz.
